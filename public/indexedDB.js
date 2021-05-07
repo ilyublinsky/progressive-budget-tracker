@@ -2,56 +2,53 @@ const VERSION = 1;
 const request = indexedDB.open("transactions", VERSION);
 let db;
 
-//Getting the DB when updated, and creating a new store if on does not exist.
-request.onupgradeneeded = function (e) {
-    db = e.target.result;
-    if (db.objectStoreNames.length === 0)
-        db.createObjectStore("TransactionsStore", { autoIncrement: true });
-}
-
-//Online browser status.
-request.onsuccess = function (e) {
-    db = e.target.result;
-    if (navigator.onLine)
-        checkDB();
-}
-
-request.onerror = function (e)
-{
-    console.error("Error: " + e.target.errorCode);
-}
-
-function checkDB()
-{
-
-    const getAll = db.transaction(["TransactionsStore"], "readwrite").objectStore("TransactionsStore").getAll();
-    getAll.onsuccess = function ()
-    {
-      if (getAll.result.length > 0)
-        {
-            fetch("/api/transaction/bulk",
-            {
-                method: "POST",
-                body: JSON.stringify(getAll.result),
-                headers: {
-                    Accept: 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json'
-                }
+  self.addEventListener("install", function(evt) {
+    evt.waitUntil(
+      caches.open(CACHE_NAME).then(cache => {
+        console.log("Your files were cached successfully!");
+        return cache.addAll(FILES_TO_CACHE);
+      })
+    );
+    self.skipWaiting();
+  });
+// activate
+  self.addEventListener("activate", function(evt) {
+    evt.waitUntil(
+      caches.keys().then(keyList => {
+        return Promise.all(
+          keyList.map(key => {
+            if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
+              console.log("Removing old cache data", key);
+              return caches.delete(key);
+            }
+          })
+        );
+      })
+    );
+    self.clients.claim();
+  });
+// fetch
+  self.addEventListener("fetch", function(evt) {
+    if (evt.request.url.includes("/api/")) {
+      evt.respondWith(
+        caches.open(DATA_CACHE_NAME).then(cache => {
+          return fetch(evt.request)
+            .then(response => {
+              if (response.status === 200) {
+                cache.put(evt.request.url, response.clone());
+              }
+              return response;
             })
-                .then(response => response.json())
-                .then(res =>
-                    {
-                        if (res.length !== 0)
-                            db.transaction(["TransactionsStore"], "readwrite").objectStore("TransactionsStore").clear();
-                    });
-        }
+            .catch(err => {
+              return cache.match(evt.request);
+            });
+        }).catch(err => console.log(err))
+      );
+      return;
     }
-}
-
-function saveRecord(record)
-{
-    db.transaction(["TransactionsStore"], "readwrite").objectStore("TransactionsStore").add(record);
-}
-
-//Checking for storaed data when the broswer is back online.
-addEventListener("online", checkDB);
+    evt.respondWith(
+      caches.match(evt.request).then(function(response) {
+        return response || fetch(evt.request);
+      })
+    );
+  });
