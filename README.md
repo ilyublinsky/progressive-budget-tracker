@@ -1,8 +1,8 @@
-# Progressive Budget Tracker 
+# Progressive Budget Tracker
 
 ***An Online/Offline Budget Tracker Tool***
 
-[Click here to get started.](https://)
+[Click here to get started.](https://business-budget-tracker-app.herokuapp.com/)
 
 ## User Story
 
@@ -29,8 +29,24 @@ Giving users a fast and easy way to track their money is important, but allowing
 
 ## User Demo
 
+![img](./public/images/budget_tracker_image.png)
+
+
+
 ## Future Development
+
+* Add different coding categories to assist in a cleaner P&L format.
+* Adding date and time specific spending.
+* Add a feature to link it to different users.
 
 ## Resources
 
+[Heroku & MongoDB Documentation](https://)
+
+[MongoDB Documentation](https://)
+
 ## Contact
+
+[Github](https://github.com/ilyublinsky)
+
+> ingrid.lyub@gmail.com
