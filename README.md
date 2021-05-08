@@ -31,8 +31,6 @@ Giving users a fast and easy way to track their money is important, but allowing
 
 ![img](./public/images/budget_tracker_image.png)
 
-
-
 ## Future Development
 
 * Add different coding categories to assist in a cleaner P&L format.
@@ -41,12 +39,15 @@ Giving users a fast and easy way to track their money is important, but allowing
 
 ## Resources
 
-[Heroku & MongoDB Documentation](https://)
+[Heroku & MongoDB Documentation](https://developer.mongodb.com/how-to/use-atlas-on-heroku/)
 
-[MongoDB Documentation](https://)
+[MongoDB Documentation](https://docs.mongodb.com/)
 
 ## Contact
 
 [Github](https://github.com/ilyublinsky)
+
+
+EMAIL ME:
 
 > ingrid.lyub@gmail.com
